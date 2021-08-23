@@ -1,38 +1,40 @@
 <template>
-<div class="card">
-  <div class="card-topline">
-    <h3 @click="editColumnTitle = true" v-if="!editColumnTitle">{{column.title}}</h3>
-    <input @blur="editColumnTitle = false" v-else type="text" v-model="column.title">
-    <button @click="removeColumn" class="btn btn-danger">x</button>
-  </div>
-  <ul class="card-body">
-    <draggable v-model="draggables" group="default">
-      <template v-for="task in tasks">
-        <li 
-          v-show="task.column == idx"
-          :key="task.i">
-          <task-component
-            @sendDataToModal="$emit('sendDataToModal', task)"
-            :task="task"
-          ></task-component>
-        </li>
-      </template>
-    </draggable>
-  </ul>
-  <add-new-task-to-column
-    :indx="idx"
-  ></add-new-task-to-column>
 
-</div>
+  <div class="card">
+    <div class="card-topline">
+      <h3 @click="editColumnTitle = true" v-if="!editColumnTitle">{{column.title}}</h3>
+      <input @blur="editColumnTitle = false" v-else type="text" v-model="column.title">
+      <button @click="removeColumn" class="btn btn-danger">x</button>
+    </div>
+    <ul class="card-body">
+      <!-- <draggable v-model="draggables" group="default"> -->
+        <template v-for="task in tasks">
+          <li 
+            v-show="task.column == idx"
+            :key="task.i">
+            <task-component
+              @sendDataToModal="$emit('sendDataToModal', task)"
+              :task="task"
+            ></task-component>
+          </li>
+        </template>
+      <!-- </draggable> -->
+    </ul>
+    <add-new-task-to-column
+      :indx="idx"
+    ></add-new-task-to-column>
+  </div>
   
 </template>
 
 <script>
-// v-if="task.column == idx"
 
-import {mapState} from 'vuex';
+
+import {mapState, mapActions} from 'vuex';
 import AddNewTaskToColumn from './addNewTaskToColumn.vue';
-import Draggable from 'vuedraggable';
+
+// import Draggable from 'vuedraggable';
+
 
 import Task from "./Task.vue";
   export default {
@@ -40,25 +42,24 @@ import Task from "./Task.vue";
     props: {
       idx: Number,
       column: Object,
-      id: [String, Number]
+      id: [String, Number],
+      boardId: [String, Number]
     },
     data() {
       return {
-        editColumnTitle: false,
+        editColumnTitle: true,
       }
     },
     components: {
       'task-component' : Task,
       AddNewTaskToColumn,
-      Draggable,
+      // Draggable,
     },
     methods: {
-      removeColumn(idx){
-        this.$store.commit('removeColumn', idx)
-      }
+      ...mapActions(['removeColumn'])
     },
     computed:{
-      ...mapState({tasks: state => state.tasks.todo}),
+      ...mapState({tasks: state => state.todo}),
         // draggables: {
         //   get() {
         //     console.log(this);

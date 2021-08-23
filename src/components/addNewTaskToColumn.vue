@@ -20,6 +20,7 @@
 </template>
 
 <script>
+import uniqid from 'uniqid';
   export default {
     props: {
       indx: Number
@@ -30,7 +31,7 @@
         taskDdata: {
           title: '',
           description: '',
-          fullDescr: ''
+          fullDescr: '',
         }
       }
     },
@@ -44,16 +45,27 @@
       addTaskToColumn(indx) {
         this.$store.commit('addTaskToProperColumn', {
             column: indx,
+            date: this.getTaskdate,
             title: this.taskDdata.title,
             descr: this.taskDdata.description,
             fullDescr: this.taskDdata.fullDescr,
+            id: uniqid()
           })
           this.addingTask = false;
           this.resetForm();
       },
     },
     computed: {
-
+       getTaskdate() {
+        let currentdate = new Date(); 
+        let datetime = currentdate.getDate() + "/"
+          + (currentdate.getMonth()+1)  + "/" 
+          + currentdate.getFullYear() + " @ "  
+          + currentdate.getHours() + ":"  
+          + currentdate.getMinutes() + ":" 
+          + currentdate.getSeconds();
+          return datetime
+      },
     }
   }
 </script>

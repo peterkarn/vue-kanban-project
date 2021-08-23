@@ -1,48 +1,81 @@
 import Vue from 'vue';
 import Vuex from 'vuex';
+import _ from 'lodash';
 
 Vue.use(Vuex);
 
-export default new Vuex.Store({
+const store = new Vuex.Store({
   state: {
-    tasks: {
-      todo: [],
-    },
-    columns: [
-      {
-        id: 'x',
-        title: 'Test',
-      },
-      {
-        id: 'y',
-        title: 'test 2',
-      }
-    ],
-    nextId: 1,
-    colId: 1,
+    boards: [],
+    columns: [],
+    todo: [],
+    boardId: 1,
+    colId: 0,
   },
   mutations: {
-    addColumn(state) {
+    addColumn(state, boardId) {
       state.columns.push({
-        id: state.colId += 1,
         title: 'New Column',
+        board: boardId
+      })
+    },
+    addBoard(state, newBoard) {
+      state.boards.push({
+        id: state.boardId += 1,
+        title: newBoard.title
       })
     },
     removeColumn(state, idx) {
-       state.columns.splice(idx, 1)
+      state.columns.splice(idx, 1);
     },
     addTaskToProperColumn(state, newTascToCol) {
-      state.tasks.todo.push(Object.assign(newTascToCol, {id: state.nextId}))
-      state.nextId += 1;
+      state.todo.push(newTascToCol);
     },
-    // updateTasks(state, tasks) {
-    //   // state.tasks.todo = tasks
-    //   // console.log(tasks);
-    // },
     removeTask(state, id) {
-      let properTask = state.tasks.todo.find(task => task.id == id);
-      let properTaskIndex = state.tasks.todo.indexOf(properTask)
-      state.tasks.todo.splice(properTaskIndex, 1)
+      let properTask = state.todo.find(task => task.id == id);
+      let properTaskIndex = state.todo.indexOf(properTask);
+      state.todo.splice(properTaskIndex, 1);
+    },
+    initialiseStore(state) {
+      if (localStorage.getItem('store')) {
+        this.replaceState(
+          Object.assign(state, JSON.parse(localStorage.getItem('store')))
+        );
+      }
+    },
+    updateTask(state, updatedTask) {
+      const index = _.findIndex(state.todo, {
+        id: updatedTask.id
+      });
+      state.todo.splice(index, 1, updatedTask)
     }
   },
+  actions: {
+    addColumn(context, boardId) {
+      context.commit('addColumn', boardId)
+    },
+    addBoard(context, newBoard) {
+      context.commit('addBoard', newBoard)
+      
+    },
+    removeColumn(context) {
+      if (confirm('R u sure')) {
+        context.commit('removeColumn')
+      }
+    },
+    removeTask(context) {
+       if (confirm('R u sure')) {
+         context.commit('removeTask')
+       }
+    },
+    updateTask(context, updatedTask) {
+      context.commit('updateTask', updatedTask);
+    },
+  }
 });
+
+store.subscribe((mutation, state) => {
+  localStorage.setItem('store', JSON.stringify(state));
+});
+
+export default store

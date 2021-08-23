@@ -2,7 +2,6 @@
     <div class="menubar">
       <div class="btn-group" role="group" aria-label="Menu bar">
         <router-link :class="activeClass('/board')" to="/board">Board</router-link>
-        <router-link :class="activeClass('/taskcreator')" to="/taskcreator">Create Task</router-link>
       </div>
     </div>       
 </template>

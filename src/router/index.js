@@ -1,23 +1,31 @@
 import Vue from 'vue'
 import VueRouter from 'vue-router'
-import TaskCreator from "@/components/TaskCreator.vue";
+import Details from "@/components/Details.vue";
 import Board from "@/components/Board.vue";
+import Boards from "@/components/Boards.vue";
 
 Vue.use(VueRouter)
 
 const routes = [
   {
-    path: '/taskcreator',
-    component: TaskCreator,
+    path: '/',
+    component: Boards,
   },
-   {
-     path: '/board',
-     component: Board,
+  {
+    path: '/details/:id',
+    component: Details,
   },
-   {
+  {
+    path: '/board/:id',
+    component: Board,
+    name: 'board',
+    props: true
+  },
+  {
     path: '*',
-    redirect: '/board',
-  }
+    redirect: '/',
+  },
+
 ]
 
 const router = new VueRouter({

@@ -1,33 +1,24 @@
 <template>
 <div class="card task-item">
     <div class="card-block">
-      <h5 class="card-title">
-        <span v-if="!editTitle" @click="editTitle = true">{{task.title}}</span>
+      <p class="card-date">{{task.date}}</p>
+        <p class="card-title" v-if="!editTitle" @click="editTitle = true">{{task.title}}</p>
         <input v-else type="text" v-model="task.title" @blur="editTitle = false">
-      </h5>
       <p class="card-descr" v-if="!editDescr" @click="editDescr = true">{{task.descr}}</p>
       <input v-else type="text" v-model="task.descr" @blur="editDescr = false">
       <p class="card-full-descr"> {{task.fullDescr}}</p>
       <div class="card-btns">
         <button @click="removeTask" class="btn btn-danger">Remove</button>
-        <!-- <b-button v-b-modal.modal class="btn btn-primary">Edit</b-button> -->
-        <button @click="sendDataToModal" class="btn btn-primary">View</button>
+        <button @click="sendDataToModal" class="btn btn-primary">Edit</button>
+        <router-link class="btn btn-success" :to="'/details/' + task.id">View</router-link>
       </div>
     </div>
-    <!-- <b-modal id="modal">
-       <h5 class="card-title">
-        <span v-if="!editTitle" @click="editTitle = true">{{task.title}}</span>
-        <input v-else type="text" v-model="task.title" @blur="editTitle = false">
-      </h5>
-      <p class="card-descr" v-if="!editDescr" @click="editDescr = true">{{task.descr}}</p>
-      <input v-else type="text" v-model="task.descr" @blur="editDescr = false">
-      <p class="card-full-descr" v-if="!editFullDescr" @click="editFullDescr = true">{{task.fullDescr}}</p>
-      <textarea v-else v-model="task.fullDescr" @blur="editFullDescr = false"></textarea>
-    </b-modal> -->
+    <router-view></router-view>
   </div>
 </template>
 
 <script>
+import {mapActions} from 'vuex';
   export default {
     name: 'Task',
     props: {
@@ -38,6 +29,7 @@
         editTitle: false,
         editDescr: false,
         editFullDescr: false,
+        editCard: false
       }
     },
     methods: {
@@ -47,7 +39,8 @@
       },
       sendDataToModal() {
         this.$emit('sendDataToModal', this.task)
-      }
+      },
+      ...mapActions(['removeTask', 'reinitStore'])
     }
   }
 </script>
@@ -56,6 +49,11 @@
 
   .card.task-item {
     background: #627180;
+  }
+
+  .card-date {
+    font-size: 12px;
+    opacity: 0.7;
   }
   
   .card-title:hover, .card-descr:hover, .modal-dialog .card-full-descr:hover {

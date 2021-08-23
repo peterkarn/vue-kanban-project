@@ -1,24 +1,33 @@
 <template>
 <div class="board">
   <div>
-    <button class="add-column btn btn-primary" @click="addColumn"> +</button>
+    <div>
+      <router-link class="btn btn-secondary" to="/">Back to boards list</router-link>
+    </div>
+    <button class="add-column btn btn-primary" @click="addColumn($route.params.id)"> +</button>
     <ul class="board row">
+      <template v-for="(column, idx) in columns">
       <li class="col-12 col-md-6 col-lg-4"
-        v-for="(column, idx) in columns"
-        :key="column.id"> 
+        v-show="$route.params.id == column.board"
+        :key="column.id"
+      > 
         <column
-          @sendDataToModal="log"
+          @sendDataToModal="showModal"
           :column="column" 
           :idx="idx" 
-          :id="column.id">
+          :id="column.id"
+          >
         </column>
       </li>
+      </template>
     </ul>
   </div>
-  <b-button v-b-modal.modal> Modal</b-button>
-  <b-modal id="modal">
+  <b-modal 
+    id="modal"
+    @hide="handleHide"
+  >
     <h5 class="card-title">
-      <input type="text" v-model.lazy="taskForModal.title">
+      <input type="text" v-model="taskForModal.title">
     </h5>
     <input  type="text" v-model="taskForModal.descr">
     <textarea  v-model="taskForModal.fullDescr"></textarea>
@@ -27,11 +36,14 @@
 </template>
 
 <script>
-import { mapState } from 'vuex'
+import { mapState, mapActions } from 'vuex'
 import Column from "./Column.vue";
 
   export default {
     name: 'Board',
+    props: {
+      boardId: Number
+    },
     components: {
       Column,
     },
@@ -41,16 +53,21 @@ import Column from "./Column.vue";
       }
     },
     methods: {
-      addColumn() {
-        this.$store.commit('addColumn')
+      handleHide(bvEvt) {
+        if (bvEvt.trigger === 'ok') {
+          this.$store.dispatch('updateTask', this.taskForModal);
+        } else {
+            return false
+        }
       },
-      log(task) {
-        this.taskForModal = task;
-        console.log(this.taskForModal); 
-      }
+      showModal(task) {
+        this.taskForModal = {...task};
+        this.$bvModal.show('modal')
+      },
+      ...mapActions(['addColumn', 'updateTask']),
     },
     computed: { 
-      ...mapState({columns: state => state.columns}), 
+      ...mapState({columns: state => state.columns}),
     }
   }
 </script>

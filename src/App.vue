@@ -1,26 +1,28 @@
 <template>
-  <div id="app">
+  <div class="app" id="app">
     <div class="page-header">
       <h1>Kanban Board</h1>
-      <p class="lead">An example of a Kanban board, written in Vue.js</p>
+      <p>vuejs based</p>
+      <hr>
     </div>
-    <top-bar></top-bar>
     <router-view/>
   </div>
 </template>
 
 <script>
-  import TopBar from "./components/TopBar.vue";
 
   export default {
     name: 'app',
-    components: {
-      TopBar,
+    beforeCreate() {
+      this.$store.commit('initialiseStore');
     }
   };
 </script>
 
 <style>
+  .app {
+    padding-top: 50px;
+  }
   .page-header h1 {
     font-weight: 300;
   }
