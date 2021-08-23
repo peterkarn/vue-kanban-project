@@ -7,7 +7,7 @@
       <button @click="removeColumn" class="btn btn-danger">x</button>
     </div>
     <ul class="card-body">
-      <draggable v-model="draggables" ghost-class="ghost" group="todos"> 
+      <draggable v-model="draggables" group="todos"> 
          <template v-for="task in tasks">
             <li 
               v-show="task.column == idx"
@@ -63,10 +63,7 @@ import Task from "./Task.vue";
           return this.tasks
         },
         set(tasks) {
-          this.$store.commit('reorderTasks', {
-            tasks,
-            // id: this.idx,
-          })
+          this.$store.commit('reorderTasks', tasks)
         }  
       },
       ...mapState({tasks: state => state.todo}),

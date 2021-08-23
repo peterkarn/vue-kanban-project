@@ -53,7 +53,6 @@ const store = new Vuex.Store({
       console.log(state.todo); //объект state c тасками до модификации
       
       console.log(tasks); //объект который приходит из column - computed - dragables - set
-      
     }
   },
   actions: {
@@ -65,12 +64,12 @@ const store = new Vuex.Store({
       
     },
     removeColumn(context) {
-      if (confirm('R u sure')) {
+      if (confirm('Delete column?')) {
         context.commit('removeColumn')
       }
     },
     removeTask(context) {
-       if (confirm('R u sure')) {
+       if (confirm('Delete task?')) {
          context.commit('removeTask')
        }
     },
