@@ -48,6 +48,12 @@ const store = new Vuex.Store({
         id: updatedTask.id
       });
       state.todo.splice(index, 1, updatedTask)
+    },
+    reorderTasks(state, { tasks }) {
+      console.log(state.todo); //объект state c тасками до модификации
+      
+      console.log(tasks); //объект который приходит из column - computed - dragables - set
+      
     }
   },
   actions: {

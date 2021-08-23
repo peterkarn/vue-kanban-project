@@ -1,38 +1,38 @@
 <template>
-<div class="board">
-  <div>
+  <div class="board">
     <div>
-      <router-link class="btn btn-secondary" to="/">Back to boards list</router-link>
+      <div>
+        <router-link class="btn btn-secondary" to="/">Back to boards list</router-link>
+      </div>
+      <button class="add-column btn btn-primary" @click="addColumn($route.params.id)"> +</button>
+      <ul class="board row">
+        <template v-for="(column, idx) in columns">
+          <li class="col-12 col-md-6 col-lg-4"
+            v-show="$route.params.id == column.board"
+            :key="column.id"
+          > 
+            <column
+              @sendDataToModal="showModal"
+              :column="column" 
+              :idx="idx" 
+              :id="column.id"
+              >
+            </column>
+          </li>
+        </template>
+      </ul>
     </div>
-    <button class="add-column btn btn-primary" @click="addColumn($route.params.id)"> +</button>
-    <ul class="board row">
-      <template v-for="(column, idx) in columns">
-      <li class="col-12 col-md-6 col-lg-4"
-        v-show="$route.params.id == column.board"
-        :key="column.id"
-      > 
-        <column
-          @sendDataToModal="showModal"
-          :column="column" 
-          :idx="idx" 
-          :id="column.id"
-          >
-        </column>
-      </li>
-      </template>
-    </ul>
+    <b-modal 
+      id="modal"
+      @hide="handleHide"
+    >
+      <h5 class="card-title">
+        <input type="text" v-model="taskForModal.title">
+      </h5>
+      <input  type="text" v-model="taskForModal.descr">
+      <textarea  v-model="taskForModal.fullDescr"></textarea>
+    </b-modal>
   </div>
-  <b-modal 
-    id="modal"
-    @hide="handleHide"
-  >
-    <h5 class="card-title">
-      <input type="text" v-model="taskForModal.title">
-    </h5>
-    <input  type="text" v-model="taskForModal.descr">
-    <textarea  v-model="taskForModal.fullDescr"></textarea>
-  </b-modal>
-</div>
 </template>
 
 <script>
@@ -66,7 +66,7 @@ import Column from "./Column.vue";
       },
       ...mapActions(['addColumn', 'updateTask']),
     },
-    computed: { 
+    computed: {
       ...mapState({columns: state => state.columns}),
     }
   }

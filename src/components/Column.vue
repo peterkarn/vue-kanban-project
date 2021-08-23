@@ -7,18 +7,18 @@
       <button @click="removeColumn" class="btn btn-danger">x</button>
     </div>
     <ul class="card-body">
-      <!-- <draggable v-model="draggables" group="default"> -->
-        <template v-for="task in tasks">
-          <li 
-            v-show="task.column == idx"
-            :key="task.i">
-            <task-component
-              @sendDataToModal="$emit('sendDataToModal', task)"
-              :task="task"
-            ></task-component>
-          </li>
-        </template>
-      <!-- </draggable> -->
+      <draggable v-model="draggables" ghost-class="ghost" group="todos"> 
+         <template v-for="task in tasks">
+            <li 
+              v-show="task.column == idx"
+              :key="task.i">
+              <task-component
+                @sendDataToModal="$emit('sendDataToModal', task)"
+                :task="task"
+              ></task-component>
+            </li>
+          </template>
+      </draggable>
     </ul>
     <add-new-task-to-column
       :indx="idx"
@@ -32,8 +32,7 @@
 
 import {mapState, mapActions} from 'vuex';
 import AddNewTaskToColumn from './addNewTaskToColumn.vue';
-
-// import Draggable from 'vuedraggable';
+import Draggable from 'vuedraggable';
 
 
 import Task from "./Task.vue";
@@ -53,25 +52,25 @@ import Task from "./Task.vue";
     components: {
       'task-component' : Task,
       AddNewTaskToColumn,
-      // Draggable,
+      Draggable,
     },
     methods: {
       ...mapActions(['removeColumn'])
     },
     computed:{
+      draggables: {
+        get() {
+          return this.tasks
+        },
+        set(tasks) {
+          this.$store.commit('reorderTasks', {
+            tasks,
+            // id: this.idx,
+          })
+        }  
+      },
       ...mapState({tasks: state => state.todo}),
-        // draggables: {
-        //   get() {
-        //     console.log(this);
-        //     return this.tasks;
-        //   },
-        //   set(tasks) {
-        //     console.log(tasks);
-        //     this.$store.commit('updateTasks', {
-        //       tasks,
-        //     })
-        //   }
-      // }
+        
     } 
   }
 </script>
@@ -87,6 +86,7 @@ import Task from "./Task.vue";
   }
 
   .card-topline h3 {
+    width: 100%;
     border-bottom: 1px solid rgba(255, 255, 255, 0.0);
   }
 
